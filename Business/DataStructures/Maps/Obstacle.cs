@@ -1,4 +1,5 @@
-﻿using Business.Interfaces;
+﻿using Business.DataStructures.Abstracts;
+using Business.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Business.Enums.Enums;
 
-namespace Business.DataStructures
+namespace Business.DataStructures.Maps
 {
     public class Obstacle : GameObject
     {

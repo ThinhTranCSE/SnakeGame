@@ -1,5 +1,5 @@
 ﻿using Business.Configurations;
-using Business.DataStructures;
+using Business.DataStructures.Maps;
 using System;
 using System.Collections.Generic;
 using System.Linq;

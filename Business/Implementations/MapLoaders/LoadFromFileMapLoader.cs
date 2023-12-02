@@ -1,4 +1,4 @@
-﻿using Business.DataStructures;
+﻿using Business.DataStructures.Maps;
 using Business.Interfaces;
 using System;
 using System.Collections.Generic;

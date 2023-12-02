@@ -1,5 +1,5 @@
 ﻿using Business.Configurations;
-using Business.DataStructures;
+using Business.DataStructures.Abstracts;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

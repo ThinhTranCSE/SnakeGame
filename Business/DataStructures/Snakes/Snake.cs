@@ -1,4 +1,5 @@
-﻿using Business.Interfaces;
+﻿using Business.DataStructures.Abstracts;
+using Business.Interfaces;
 using Business.Ultilities;
 using System;
 using System.Collections.Generic;
@@ -8,16 +9,16 @@ using System.Text;
 using System.Threading.Tasks;
 using static Business.Enums.Enums;
 
-namespace Business.DataStructures
+namespace Business.DataStructures.Snakes
 {
     public class Snake : IDisposable
     {
         public List<SnakeBody> Bodies { get; private set; }
         public SnakeHead Head { get; private set; }
 
-        public int Length => this.Bodies.Count + 1;
+        public int Length => Bodies.Count + 1;
 
-        public List<GameObject> GameObjects => this.GetGameObjects();   
+        public List<GameObject> GameObjects => GetGameObjects();
         public Direction Direction { get; private set; }
         private ISnakeController Controller { get; set; }
 
@@ -52,9 +53,9 @@ namespace Business.DataStructures
                         GameManager.Instance.Map.ActiveFloors.ContainsKey((XTailPosition, YTailPosition))
                        )
                     {
-                        this.Head = new SnakeHead(HeadPosition.Item1, HeadPosition.Item2);
-                        this.Bodies = new List<SnakeBody>() { new SnakeBody(XBodyPosition, YBodyPosition), new SnakeBody(XTailPosition, YTailPosition) };
-                        this.Direction = ChoosenDirection;
+                        Head = new SnakeHead(HeadPosition.Item1, HeadPosition.Item2);
+                        Bodies = new List<SnakeBody>() { new SnakeBody(XBodyPosition, YBodyPosition), new SnakeBody(XTailPosition, YTailPosition) };
+                        Direction = ChoosenDirection;
                         IsGenerated = true;
                         break;
                     }
@@ -64,70 +65,73 @@ namespace Business.DataStructures
 
 
 
-            GameManager.Instance.OnUpdateEvent += this.OnUpdate;
+            GameManager.Instance.OnUpdateEvent += OnUpdate;
             this.Controller = Controller;
-            this.Controller.OnDirectionChanged += this.ChangeDirection;
+            this.Controller.OnDirectionChanged += ChangeDirection;
         }
-        
+
         public List<GameObject> GetGameObjects()
         {
-            List<GameObject> Objects = this.Bodies.Cast<GameObject>().ToList();
-            Objects.Add(this.Head);
+            List<GameObject> Objects = Bodies.Cast<GameObject>().ToList();
+            Objects.Add(Head);
             return Objects;
         }
         public void Move()
         {
-            Vector2 Dir = this.Direction.ToVector();
+            Vector2 Dir = Direction.ToVector();
 
-            this.CheckNextStepColision((this.Head.X + (int)Dir.X, this.Head.Y + (int)Dir.Y));
+            GameObject? CollidedObject = CollidedGameObject((Head.X + (int)Dir.X, Head.Y + (int)Dir.Y));
+            CollidedObject?.ColisionEffect(this);
 
-            SnakeBody OldTail = this.Bodies[this.Bodies.Count - 1];
-            this.Bodies.RemoveAt(this.Bodies.Count - 1);
-            this.Bodies.Insert(0, new SnakeBody(this.Head.X, this.Head.Y));
-            this.Head.X += (int)Dir.X;
-            this.Head.Y += (int)Dir.Y;
+            SnakeBody OldTail = Bodies[Bodies.Count - 1];
 
-            this.OnMoveEvent?.Invoke(this, OldTail);
+            Bodies.RemoveAt(Bodies.Count - 1);
+            Bodies.Insert(0, new SnakeBody(Head.X, Head.Y));
+            Head.X += (int)Dir.X;
+            Head.Y += (int)Dir.Y;
+
+            OnMoveEvent?.Invoke(this, OldTail);
         }
 
-        private void CheckNextStepColision((int, int) NextPosition)
+        private GameObject? CollidedGameObject((int, int) NextPosition)
         {
             if (GameManager.Instance.EntitiesDictionary.ContainsKey(NextPosition))
             {
-                GameManager.Instance.EntitiesDictionary[NextPosition].ColisionEffect(this);
+                return GameManager.Instance.EntitiesDictionary[NextPosition];
             }
+            return null;
         }
         public void ChangeDirection(Direction NewDirection)
         {
             Vector2 NewDir = NewDirection.ToVector();
-            Vector2 CurrentDir = this.Direction.ToVector();
+            Vector2 CurrentDir = Direction.ToVector();
             if (NewDir.X * CurrentDir.X + NewDir.Y * CurrentDir.Y != 0) return;
-            this.Direction = NewDirection;
+            Direction = NewDirection;
         }
 
         public void Grow()
         {
-            SnakeBody Tail = this.Bodies[this.Bodies.Count - 1];
-            SnakeBody LastBody = this.Bodies[this.Bodies.Count - 2];
+            SnakeBody Tail = Bodies[Bodies.Count - 1];
+            SnakeBody LastBody = Bodies[Bodies.Count - 2];
             int X = Tail.X + (Tail.X - LastBody.X);
             int Y = Tail.Y + (Tail.Y - LastBody.Y);
-            this.Bodies.Add(new SnakeBody(X, Y));
-            
-            this.OnGrowEvent?.Invoke(this);
+            Bodies.Add(new SnakeBody(X, Y));
+
+            OnGrowEvent?.Invoke(this);
         }
         public void Die()
         {
-            this.OnDieEvent?.Invoke(this);
-            this.Dispose();
+            OnDieEvent?.Invoke(this);
+            Dispose();
         }
 
         public void OnUpdate()
         {
-            this.Move();
+            Move();
         }
         public void Dispose()
         {
-            GameManager.Instance.OnUpdateEvent -= this.OnUpdate;
+            GameManager.Instance.OnUpdateEvent -= OnUpdate;
         }
 
     }

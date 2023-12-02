@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Business.DataStructures;
 using Business.Interfaces;
 using Business.Implementations.MapLoaders;
+using Business.DataStructures.Maps;
 
 namespace Business
 {

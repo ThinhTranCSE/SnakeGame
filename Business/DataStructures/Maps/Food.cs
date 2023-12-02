@@ -1,4 +1,6 @@
-﻿using Business.Enums;
+﻿using Business.DataStructures.Abstracts;
+using Business.DataStructures.Snakes;
+using Business.Enums;
 using Business.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Business.Enums.Enums;
 
-namespace Business.DataStructures
+namespace Business.DataStructures.Maps
 {
     public class Food : GameObject, IDisposable
     {
@@ -25,8 +27,8 @@ namespace Business.DataStructures
         public override void ColisionEffect(Snake Snake)
         {
             Snake.Grow();
-            this.OnFoodEatenEvent?.Invoke(this);
-            this.Dispose();
+            OnFoodEatenEvent?.Invoke(this);
+            Dispose();
         }
 
         public void Dispose()

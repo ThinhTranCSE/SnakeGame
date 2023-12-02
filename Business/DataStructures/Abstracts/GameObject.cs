@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using static Business.Enums.Enums;
-
-namespace Business.DataStructures
+using Business.DataStructures.Snakes;
+namespace Business.DataStructures.Abstracts
 {
 
     public abstract class GameObject
@@ -12,7 +12,7 @@ namespace Business.DataStructures
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public (int, int) Position => (this.X, this.Y);
+        public (int, int) Position => (X, Y);
         public virtual Brush Color { get; }
 
         public virtual Shape Shape { get; }
@@ -24,8 +24,8 @@ namespace Business.DataStructures
             this.Width = Width;
             this.Height = Height;
 
-            this.Color = Brushes.White;
-            this.Shape = Shape.Rectangle;
+            Color = Brushes.White;
+            Shape = Shape.Rectangle;
         }
 
         public virtual void ColisionEffect(Snake Snake)

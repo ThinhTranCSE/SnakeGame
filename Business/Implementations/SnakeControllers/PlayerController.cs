@@ -1,12 +1,12 @@
 ﻿using Business.Interfaces;
 using static Business.Enums.Enums;
 
-namespace Business
+namespace Business.Implementations.SnakeControllers
 {
     public class PlayerController : ISnakeController
     {
         public static PlayerController Instance => GetInstance();
-        
+
         private static PlayerController _Instance;
 
         public event Action<Direction> OnDirectionChanged;
@@ -16,11 +16,11 @@ namespace Business
 
         public static PlayerController GetInstance()
         {
-            if (PlayerController._Instance == null)
+            if (_Instance == null)
             {
-                PlayerController._Instance = new PlayerController();
+                _Instance = new PlayerController();
             }
-            return PlayerController._Instance;
+            return _Instance;
         }
 
 
