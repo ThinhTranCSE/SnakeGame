@@ -50,9 +50,12 @@ namespace Business
         public List<GameObject> GetGameObjects()
         {
             List<GameObject> GameObjects = new List<GameObject>();
-            GameObjects.AddRange(this.Map.ActiveFloors.Values.ToList<GameObject>());
-            GameObjects.AddRange(this.Map.InactiveFloors.Values.ToList<GameObject>());
-            GameObjects.AddRange(this.EntitiesDictionary.Values.ToList());
+            List<GameObject> ActiveFloors = this.Map.ActiveFloors.Values.Cast<GameObject>().ToList();
+            GameObjects.AddRange(ActiveFloors);
+            List<GameObject> Obstacles = this.Map.InactiveFloors.Values.Cast<GameObject>().ToList();
+            GameObjects.AddRange(Obstacles);
+            List<GameObject> Entities = this.EntitiesDictionary.Values.ToList();
+            GameObjects.AddRange(Entities);
             return GameObjects;
         }
 
@@ -85,10 +88,10 @@ namespace Business
 
             foreach (Snake Snake in this.Snakes)
             {
-                this.EntitiesDictionary.TryAdd((Snake.Head.X, Snake.Head.Y), Snake.Head);
+                this.EntitiesDictionary.Add((Snake.Head.X, Snake.Head.Y), Snake.Head);
                 foreach (SnakeBody Body in Snake.Bodies)
                 {
-                    this.EntitiesDictionary.TryAdd((Body.X, Body.Y), Body);
+                    this.EntitiesDictionary.Add((Body.X, Body.Y), Body);
                 }
             }
         }
@@ -109,7 +112,8 @@ namespace Business
 
         private void GenerateNewSnake()
         {
-            Snake NewSnake = new Snake(PlayerController.Instance);
+            //Snake NewSnake = new Snake(PlayerController.Instance);
+            Snake NewSnake = new Snake(new DFSController());
             this.Snakes.Add(NewSnake);
 
             NewSnake.OnDieEvent += this.OnSnakeDie;

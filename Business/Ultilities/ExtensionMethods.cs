@@ -26,5 +26,11 @@ namespace Business.Ultilities
             }
             return new Vector2(0, 0);
         }
+
+        public static List<Vector2> NormalVectors(this Vector2 Vector)
+        {
+            List<Vector2> Result = new List<Vector2>() { new Vector2(Vector.Y, -Vector.X), new Vector2(-Vector.Y, Vector.X)};
+            return Result;
+        }
     }
 }

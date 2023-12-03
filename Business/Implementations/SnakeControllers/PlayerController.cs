@@ -9,6 +9,8 @@ namespace Business.Implementations.SnakeControllers
 
         private static PlayerController _Instance;
 
+        public Direction Direction { get; set; }
+
         public event Action<Direction> OnDirectionChanged;
 
 
@@ -26,7 +28,13 @@ namespace Business.Implementations.SnakeControllers
 
         public void HandleInput(Direction Direction)
         {
+            this.Direction = Direction;
             OnDirectionChanged?.Invoke(Direction);
+        }
+
+        public Direction NextDirection()
+        {
+            return this.Direction;
         }
     }
 }

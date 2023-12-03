@@ -27,6 +27,7 @@ namespace Business.DataStructures.Maps
             }
 
 
+
             ActiveFloors = new Dictionary<(int, int), Floor>();
             foreach (Floor Floor in Floors)
             {

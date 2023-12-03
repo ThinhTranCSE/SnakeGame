@@ -78,6 +78,7 @@ namespace Business.DataStructures.Snakes
         }
         public void Move()
         {
+            this.Direction = this.Controller.NextDirection();
             Vector2 Dir = Direction.ToVector();
 
             GameObject? CollidedObject = CollidedGameObject((Head.X + (int)Dir.X, Head.Y + (int)Dir.Y));

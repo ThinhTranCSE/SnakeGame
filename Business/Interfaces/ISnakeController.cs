@@ -10,5 +10,8 @@ namespace Business.Interfaces
     public interface ISnakeController
     {
         public event Action<Direction> OnDirectionChanged;
+
+        public Direction Direction { get; set; }
+        public Direction NextDirection();
     }
 }

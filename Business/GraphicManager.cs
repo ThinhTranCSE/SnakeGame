@@ -44,7 +44,9 @@ namespace Business
                 switch (GameObject.Shape)
                 {
                     case Shape.Rectangle:
-                       this.Canvas.FillRectangle(GameObject.Color, Container);
+                        this.Canvas.FillRectangle(GameObject.Color, Container);
+                        this.Canvas.DrawRectangle(Pens.Black, Container);
+                        this.Canvas.DrawString($"{GameObject.X},{GameObject.Y}", new Font("Arial", 5), Brushes.Black, Container);
                         break;
 
                     case Shape.Ellipse:
