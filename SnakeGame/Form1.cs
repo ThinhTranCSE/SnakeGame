@@ -28,7 +28,7 @@ namespace SnakeGame
                 while (true)
                 {
                     this.PtbGamePlay.Invalidate();
-                    Thread.Sleep(50);
+                    Thread.Sleep(100);
                 }
             }
             catch (ThreadInterruptedException)

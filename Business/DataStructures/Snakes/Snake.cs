@@ -18,11 +18,12 @@ namespace Business.DataStructures.Snakes
 
         public int Length => Bodies.Count + 1;
 
+        public int PendingBodies { get; set; } = 0;
         public List<GameObject> GameObjects => GetGameObjects();
         public Direction Direction { get; private set; }
         private ISnakeController Controller { get; set; }
 
-        public event Action<Snake, GameObject> OnMoveEvent;
+        public event Action<Snake, (int, int)> OnMoveEvent;
 
         public event Action<Snake> OnGrowEvent;
 
@@ -67,7 +68,6 @@ namespace Business.DataStructures.Snakes
 
             GameManager.Instance.OnUpdateEvent += OnUpdate;
             this.Controller = Controller;
-            this.Controller.OnDirectionChanged += ChangeDirection;
         }
 
         public List<GameObject> GetGameObjects()
@@ -78,20 +78,35 @@ namespace Business.DataStructures.Snakes
         }
         public void Move()
         {
-            this.Direction = this.Controller.NextDirection();
-            Vector2 Dir = Direction.ToVector();
+            try
+            {
 
-            GameObject? CollidedObject = CollidedGameObject((Head.X + (int)Dir.X, Head.Y + (int)Dir.Y));
-            CollidedObject?.ColisionEffect(this);
+                this.Direction = this.Controller.NextDirection(this);
+                Vector2 Dir = Direction.ToVector();
 
-            SnakeBody OldTail = Bodies[Bodies.Count - 1];
+                GameObject? CollidedObject = CollidedGameObject((Head.X + (int)Dir.X, Head.Y + (int)Dir.Y));
+                CollidedObject?.ColisionEffect(this);
 
-            Bodies.RemoveAt(Bodies.Count - 1);
-            Bodies.Insert(0, new SnakeBody(Head.X, Head.Y));
-            Head.X += (int)Dir.X;
-            Head.Y += (int)Dir.Y;
+                (int, int) OldTailPosition = Bodies[Bodies.Count - 1].Position;
 
-            OnMoveEvent?.Invoke(this, OldTail);
+                Bodies.RemoveAt(Bodies.Count - 1);
+                Bodies.Insert(0, new SnakeBody(Head.X, Head.Y));
+                Head.X += (int)Dir.X;
+                Head.Y += (int)Dir.Y;
+
+
+                OnMoveEvent?.Invoke(this, OldTailPosition);
+
+                if (PendingBodies > 0)
+                {
+                    Grow();
+                    PendingBodies--;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private GameObject? CollidedGameObject((int, int) NextPosition)
@@ -102,12 +117,10 @@ namespace Business.DataStructures.Snakes
             }
             return null;
         }
-        public void ChangeDirection(Direction NewDirection)
+
+        public void EatFood()
         {
-            Vector2 NewDir = NewDirection.ToVector();
-            Vector2 CurrentDir = Direction.ToVector();
-            if (NewDir.X * CurrentDir.X + NewDir.Y * CurrentDir.Y != 0) return;
-            Direction = NewDirection;
+            PendingBodies++;
         }
 
         public void Grow()
@@ -133,6 +146,7 @@ namespace Business.DataStructures.Snakes
         public void Dispose()
         {
             GameManager.Instance.OnUpdateEvent -= OnUpdate;
+            throw new Exception();
         }
 
     }

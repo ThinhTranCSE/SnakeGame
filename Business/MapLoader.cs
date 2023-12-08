@@ -20,7 +20,7 @@ namespace Business
         protected MapLoader() 
         {
             //this.MapLoaderStrategy = new LoadFromFileMapLoader();
-            this.MapLoaderStrategy = new RandomGenerateMapLoader();
+           this.MapLoaderStrategy = new RandomGenerateMapLoader();
         }
 
         public static MapLoader GetInstance()

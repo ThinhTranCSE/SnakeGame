@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Business.DataStructures.Snakes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,6 @@ namespace Business.Interfaces
         public event Action<Direction> OnDirectionChanged;
 
         public Direction Direction { get; set; }
-        public Direction NextDirection();
+        public Direction NextDirection(Snake Snake);
     }
 }

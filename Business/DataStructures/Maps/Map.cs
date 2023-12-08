@@ -12,9 +12,11 @@ namespace Business.DataStructures.Maps
     {
         public Dictionary<(int, int), Obstacle> Obstacles { get; private set; }
 
-        public Dictionary<(int, int), Floor> ActiveFloors { get; private set; }
+        public Dictionary<(int, int), Floor> Floors { get; private set; }
 
-        public Dictionary<(int, int), Floor> InactiveFloors { get; private set; }
+        public Dictionary<(int, int), Floor> ActiveFloors => Floors.Where(Floor => Floor.Value.IsAvailable).ToDictionary(Floor => Floor.Key, Floor => Floor.Value);
+
+        public Dictionary<(int, int), Floor> InactiveFloors => Floors.Where(Floor => !Floor.Value.IsAvailable).ToDictionary(Floor => Floor.Key, Floor => Floor.Value);
 
         public List<GameObject> GameObjects => GetGameObjects();
 
@@ -26,15 +28,11 @@ namespace Business.DataStructures.Maps
                 this.Obstacles.TryAdd((Obstacle.X, Obstacle.Y), Obstacle);
             }
 
-
-
-            ActiveFloors = new Dictionary<(int, int), Floor>();
+            this.Floors = new Dictionary<(int, int), Floor>();
             foreach (Floor Floor in Floors)
             {
-                ActiveFloors.TryAdd((Floor.X, Floor.Y), Floor);
+                this.Floors.TryAdd((Floor.X, Floor.Y), Floor);
             }
-
-            InactiveFloors = new Dictionary<(int, int), Floor>();
 
             GameManager.Instance.OnSnakeGenerateEvent += OnSnakeGenerate;
             GameManager.Instance.OnFoodGenerateEvent += this.OnFoodGenerate;
@@ -42,15 +40,17 @@ namespace Business.DataStructures.Maps
 
         public void OnSnakeGenerate(Snake Snake)
         {
-            Floor HeadPositionFloor = ActiveFloors[(Snake.Head.X, Snake.Head.Y)];
-            ActiveFloors.Remove((Snake.Head.X, Snake.Head.Y));
-            InactiveFloors.Add((Snake.Head.X, Snake.Head.Y), HeadPositionFloor);
+            Floor HeadPositionFloor = this.Floors[(Snake.Head.X, Snake.Head.Y)];
+            HeadPositionFloor.IsAvailable = false;
+            //ActiveFloors.Remove((Snake.Head.X, Snake.Head.Y));
+            //InactiveFloors.Add((Snake.Head.X, Snake.Head.Y), HeadPositionFloor);
 
             foreach (SnakeBody Body in Snake.Bodies)
             {
                 Floor BodyPositionFloor = ActiveFloors[(Body.X, Body.Y)];
-                ActiveFloors.Remove((Body.X, Body.Y));
-                InactiveFloors.Add((Body.X, Body.Y), BodyPositionFloor);
+                BodyPositionFloor.IsAvailable = false;
+                //ActiveFloors.Remove((Body.X, Body.Y));
+                //InactiveFloors.Add((Body.X, Body.Y), BodyPositionFloor);
             }
 
             Snake.OnGrowEvent += OnSnakeGrow;
@@ -58,58 +58,60 @@ namespace Business.DataStructures.Maps
             Snake.OnDieEvent += OnSnakeDie;
         }
 
-        public void OnSnakeMove(Snake Snake, GameObject OldTail)
+        public void OnSnakeMove(Snake Snake, (int, int) OldTailPosition)
         {
-            if (!ActiveFloors.ContainsKey((Snake.Head.X, Snake.Head.Y)))
-            {
-                return;
-            }
+            Floor HeadPositionFloor = this.Floors[(Snake.Head.X, Snake.Head.Y)];
+            HeadPositionFloor.IsAvailable = false;
+            //ActiveFloors.Remove((Snake.Head.X, Snake.Head.Y));
+            //InactiveFloors.Add((Snake.Head.X, Snake.Head.Y), HeadPositionFloor);
 
-            Floor HeadPositionFloor = ActiveFloors[(Snake.Head.X, Snake.Head.Y)];
-            ActiveFloors.Remove((Snake.Head.X, Snake.Head.Y));
-            InactiveFloors.Add((Snake.Head.X, Snake.Head.Y), HeadPositionFloor);
-
-            Floor OldTailPositionFloor = InactiveFloors[(OldTail.X, OldTail.Y)];
-            InactiveFloors?.Remove((OldTail.X, OldTail.Y));
-            ActiveFloors.Add((OldTail.X, OldTail.Y), OldTailPositionFloor);
+            Floor OldTailPositionFloor = this.Floors[OldTailPosition];
+            OldTailPositionFloor.IsAvailable = true;
+            //InactiveFloors?.Remove(OldTailPosition);
+            //ActiveFloors.Add(OldTailPosition, OldTailPositionFloor);
         }
 
         public void OnSnakeGrow(Snake Snake)
         {
             SnakeBody Tail = Snake.Bodies[Snake.Bodies.Count - 1];
-            Floor TailPositionFloor = ActiveFloors[(Tail.X, Tail.Y)];
-            ActiveFloors.Remove((Tail.X, Tail.Y));
-            InactiveFloors.Add((Tail.X, Tail.Y), TailPositionFloor);
+            Floor TailPositionFloor = this.Floors[(Tail.X, Tail.Y)];
+            TailPositionFloor.IsAvailable = false;
+            //ActiveFloors.Remove((Tail.X, Tail.Y));
+            //InactiveFloors.Add((Tail.X, Tail.Y), TailPositionFloor);
         }
 
         public void OnSnakeDie(Snake Snake)
         {
-            Floor HeadPositionFloor = InactiveFloors[(Snake.Head.X, Snake.Head.Y)];
-            InactiveFloors.Remove((Snake.Head.X, Snake.Head.Y));
-            ActiveFloors.Add((Snake.Head.X, Snake.Head.Y), HeadPositionFloor);
+            Floor HeadPositionFloor = this.Floors[(Snake.Head.X, Snake.Head.Y)];
+            HeadPositionFloor.IsAvailable = true;
+            //InactiveFloors.Remove((Snake.Head.X, Snake.Head.Y));
+            //ActiveFloors.Add((Snake.Head.X, Snake.Head.Y), HeadPositionFloor);
 
             Snake.Bodies.ForEach(Body =>
             {
-                Floor BodyPositionFloor = InactiveFloors[(Body.X, Body.Y)];
-                InactiveFloors.Remove((Body.X, Body.Y));
-                ActiveFloors.Add((Body.X, Body.Y), BodyPositionFloor);
+                Floor BodyPositionFloor = this.Floors[(Body.X, Body.Y)];
+                BodyPositionFloor.IsAvailable = true;
+                //InactiveFloors.Remove((Body.X, Body.Y));
+                //ActiveFloors.Add((Body.X, Body.Y), BodyPositionFloor);
             });
         }
 
         public void OnFoodGenerate(Food Food)
         {
-            Floor FoodPositionFloor = ActiveFloors[(Food.X, Food.Y)];
-            ActiveFloors.Remove((Food.X, Food.Y));
-            InactiveFloors.Add((Food.X, Food.Y), FoodPositionFloor);
+            Floor FoodPositionFloor = this.Floors[(Food.X, Food.Y)];
+            FoodPositionFloor.IsAvailable = false;
+            //ActiveFloors.Remove((Food.X, Food.Y));
+            //InactiveFloors.Add((Food.X, Food.Y), FoodPositionFloor);
 
             Food.OnFoodEatenEvent += OnFoodEaten;
         }
 
         public void OnFoodEaten(Food Food)
         {
-            Floor FoodPositionFloor = InactiveFloors[(Food.X, Food.Y)];
-            InactiveFloors.Remove((Food.X, Food.Y));
-            ActiveFloors.Add((Food.X, Food.Y), FoodPositionFloor);
+            Floor FoodPositionFloor = this.Floors[(Food.X, Food.Y)];
+            FoodPositionFloor.IsAvailable = true;
+            //InactiveFloors.Remove((Food.X, Food.Y));
+            //ActiveFloors.Add((Food.X, Food.Y), FoodPositionFloor);
         }
 
         public List<GameObject> GetGameObjects()

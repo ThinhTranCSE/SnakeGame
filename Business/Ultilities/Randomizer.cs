@@ -39,7 +39,7 @@ namespace Business.Ultilities
         public (int, int) GetValidRandomPosition()
         {
             List<Floor> Floors = GameManager.Instance.Map.ActiveFloors.Values.ToList();
-            int Index = this.GetRandomNumber(0, Floors.Count);
+            int Index = this.GetRandomNumber(0, Floors.Count - 1);
             Floor ValidFloor = Floors[Index];
 
             return (ValidFloor.X, ValidFloor.Y); ;

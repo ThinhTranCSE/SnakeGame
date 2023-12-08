@@ -2,9 +2,11 @@
 using Business.DataStructures.Maps;
 using Business.DataStructures.Snakes;
 using Business.Implementations.SnakeControllers;
+using Business.Interfaces;
 using Business.Ultilities;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +15,7 @@ namespace Business
 {
     public class GameManager
     {
+        private int UpdateCount = 0;
         public static GameManager Instance => GetInstance();
 
         private static GameManager _Instance;
@@ -43,6 +46,11 @@ namespace Business
         }
         public void Update()
         {
+            this.UpdateCount++;
+            if(this.Snakes.Count == 0)
+            {
+                return;
+            }
             OnUpdateEvent?.Invoke();
             this.UpdateGameObjectDictionary();
         }
@@ -50,12 +58,13 @@ namespace Business
         public List<GameObject> GetGameObjects()
         {
             List<GameObject> GameObjects = new List<GameObject>();
-            List<GameObject> ActiveFloors = this.Map.ActiveFloors.Values.Cast<GameObject>().ToList();
-            GameObjects.AddRange(ActiveFloors);
-            List<GameObject> Obstacles = this.Map.InactiveFloors.Values.Cast<GameObject>().ToList();
-            GameObjects.AddRange(Obstacles);
-            List<GameObject> Entities = this.EntitiesDictionary.Values.ToList();
-            GameObjects.AddRange(Entities);
+            //List<GameObject> ActiveFloors = this.Map.ActiveFloors.Values.Cast<GameObject>().ToList();
+            //GameObjects.AddRange(ActiveFloors);
+            //List<GameObject> InactiveFloors = this.Map.InactiveFloors.Values.Cast<GameObject>().ToList();
+            //GameObjects.AddRange(InactiveFloors);
+            GameObjects.AddRange(this.Map.Floors.Values.Cast<GameObject>().ToList());
+            //List<GameObject> Entities = this.EntitiesDictionary.Values.ToList();
+            GameObjects.AddRange(this.EntitiesDictionary.Values.ToList());
             return GameObjects;
         }
 
@@ -68,10 +77,16 @@ namespace Business
 
             this.EntitiesDictionary = new Dictionary<(int, int), GameObject>();
 
-            this.GenerateNewSnake();
-            this.GenerateNewFood();
-            this.GenerateNewFood();
-            this.GenerateNewFood();
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
             this.GenerateNewFood();
 
             this.UpdateGameObjectDictionary();
@@ -88,10 +103,10 @@ namespace Business
 
             foreach (Snake Snake in this.Snakes)
             {
-                this.EntitiesDictionary.Add((Snake.Head.X, Snake.Head.Y), Snake.Head);
+                this.EntitiesDictionary.TryAdd((Snake.Head.X, Snake.Head.Y), Snake.Head);
                 foreach (SnakeBody Body in Snake.Bodies)
                 {
-                    this.EntitiesDictionary.Add((Body.X, Body.Y), Body);
+                    this.EntitiesDictionary.TryAdd((Body.X, Body.Y), Body);
                 }
             }
         }
@@ -110,10 +125,10 @@ namespace Business
             this.GenerateNewFood();
         }
 
-        private void GenerateNewSnake()
+        private void GenerateNewSnake(ISnakeController Controller)
         {
             //Snake NewSnake = new Snake(PlayerController.Instance);
-            Snake NewSnake = new Snake(new DFSController());
+            Snake NewSnake = new Snake(Controller);
             this.Snakes.Add(NewSnake);
 
             NewSnake.OnDieEvent += this.OnSnakeDie;

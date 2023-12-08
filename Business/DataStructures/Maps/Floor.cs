@@ -14,9 +14,11 @@ namespace Business.DataStructures.Maps
     public class Floor : GameObject
     {
 
-        public override Brush Color => Brushes.White;
+        public override Brush Color => IsAvailable ? Brushes.White : Brushes.Yellow;
 
         public override Shape Shape => Shape.Rectangle;
+
+        public bool IsAvailable { get; set; } = true;
 
         public Floor(int X, int Y) : base(X, Y)
         {

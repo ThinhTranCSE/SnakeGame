@@ -1,4 +1,7 @@
-﻿using Business.Interfaces;
+﻿using Business.DataStructures.Snakes;
+using Business.Interfaces;
+using Business.Ultilities;
+using System.Numerics;
 using static Business.Enums.Enums;
 
 namespace Business.Implementations.SnakeControllers
@@ -26,13 +29,16 @@ namespace Business.Implementations.SnakeControllers
         }
 
 
-        public void HandleInput(Direction Direction)
+        public void HandleInput(Direction NewDirection)
         {
-            this.Direction = Direction;
-            OnDirectionChanged?.Invoke(Direction);
+            Vector2 NewDir = NewDirection.ToVector();
+            Vector2 CurrentDir = Direction.ToVector();
+            if (NewDir.X * CurrentDir.X + NewDir.Y * CurrentDir.Y != 0) return;
+            this.Direction = NewDirection;
+            OnDirectionChanged?.Invoke(this.Direction);
         }
 
-        public Direction NextDirection()
+        public Direction NextDirection(Snake Snake)
         {
             return this.Direction;
         }

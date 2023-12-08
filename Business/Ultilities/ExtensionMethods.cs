@@ -27,6 +27,31 @@ namespace Business.Ultilities
             return new Vector2(0, 0);
         }
 
+        public static Direction ToDirection(this Vector2 Vector)
+        {
+            if (Vector == new Vector2(0, -1))
+            {
+                return Direction.Up;
+            }
+            else if (Vector == new Vector2(0, 1))
+            {
+                return Direction.Down;
+            }
+            else if (Vector == new Vector2(-1, 0))
+            {
+                return Direction.Left;
+            }
+            else if (Vector == new Vector2(1, 0))
+            {
+                return Direction.Right;
+            }
+            return Direction.Up;
+        }   
+
+        public static bool IsOpposite(this Direction Direction1, Direction Direction2)
+        {
+            return Direction1.ToVector() == -Direction2.ToVector();
+        }   
         public static List<Vector2> NormalVectors(this Vector2 Vector)
         {
             List<Vector2> Result = new List<Vector2>() { new Vector2(Vector.Y, -Vector.X), new Vector2(-Vector.Y, Vector.X)};

@@ -26,7 +26,7 @@ namespace Business.DataStructures.Maps
 
         public override void ColisionEffect(Snake Snake)
         {
-            Snake.Grow();
+            Snake.EatFood();
             OnFoodEatenEvent?.Invoke(this);
             Dispose();
         }
