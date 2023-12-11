@@ -58,12 +58,7 @@ namespace Business
         public List<GameObject> GetGameObjects()
         {
             List<GameObject> GameObjects = new List<GameObject>();
-            //List<GameObject> ActiveFloors = this.Map.ActiveFloors.Values.Cast<GameObject>().ToList();
-            //GameObjects.AddRange(ActiveFloors);
-            //List<GameObject> InactiveFloors = this.Map.InactiveFloors.Values.Cast<GameObject>().ToList();
-            //GameObjects.AddRange(InactiveFloors);
             GameObjects.AddRange(this.Map.Floors.Values.Cast<GameObject>().ToList());
-            //List<GameObject> Entities = this.EntitiesDictionary.Values.ToList();
             GameObjects.AddRange(this.EntitiesDictionary.Values.ToList());
             return GameObjects;
         }
@@ -77,6 +72,11 @@ namespace Business
 
             this.EntitiesDictionary = new Dictionary<(int, int), GameObject>();
 
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
+            this.GenerateNewSnake(new DFSController());
             this.GenerateNewSnake(new DFSController());
             this.GenerateNewSnake(new DFSController());
             this.GenerateNewSnake(new DFSController());
@@ -122,6 +122,7 @@ namespace Business
         }
         private void OnFoodEaten(Food Food)
         {
+
             this.GenerateNewFood();
         }
 

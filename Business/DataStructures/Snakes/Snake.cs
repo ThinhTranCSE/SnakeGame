@@ -80,7 +80,7 @@ namespace Business.DataStructures.Snakes
         {
             try
             {
-
+                
                 this.Direction = this.Controller.NextDirection(this);
                 Vector2 Dir = Direction.ToVector();
 
@@ -100,7 +100,6 @@ namespace Business.DataStructures.Snakes
                 if (PendingBodies > 0)
                 {
                     Grow();
-                    PendingBodies--;
                 }
             }
             catch (Exception e)
@@ -129,7 +128,14 @@ namespace Business.DataStructures.Snakes
             SnakeBody LastBody = Bodies[Bodies.Count - 2];
             int X = Tail.X + (Tail.X - LastBody.X);
             int Y = Tail.Y + (Tail.Y - LastBody.Y);
+
+            if(!GameManager.Instance.Map.Floors.ContainsKey((X, Y)))
+            {
+                return;
+            }
+
             Bodies.Add(new SnakeBody(X, Y));
+            PendingBodies--;
 
             OnGrowEvent?.Invoke(this);
         }
