@@ -15,7 +15,6 @@ namespace Business
 {
     public class GameManager
     {
-        private int UpdateCount = 0;
         public static GameManager Instance => GetInstance();
 
         private static GameManager _Instance;
@@ -46,7 +45,6 @@ namespace Business
         }
         public void Update()
         {
-            this.UpdateCount++;
             if(this.Snakes.Count == 0)
             {
                 return;
@@ -57,7 +55,7 @@ namespace Business
 
         public List<GameObject> GetGameObjects()
         {
-            List<GameObject> GameObjects = new List<GameObject>();
+            List<GameObject> GameObjects = new List<GameObject>(Map.Floors.Count + EntitiesDictionary.Count);
             GameObjects.AddRange(this.Map.Floors.Values.Cast<GameObject>().ToList());
             GameObjects.AddRange(this.EntitiesDictionary.Values.ToList());
             return GameObjects;
