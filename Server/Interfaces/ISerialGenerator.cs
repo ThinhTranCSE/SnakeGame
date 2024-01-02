@@ -8,6 +8,7 @@ namespace Server.Interfaces
 {
     public interface ISerialGenerator
     {
+        object _SyncLock { get; }
         HashSet<uint> AvailableSerials { get; }
         HashSet<uint> UsedSerials { get; }
 

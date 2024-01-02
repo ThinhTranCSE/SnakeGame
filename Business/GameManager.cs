@@ -56,8 +56,8 @@ namespace Business
         public List<GameObject> GetGameObjects()
         {
             List<GameObject> GameObjects = new List<GameObject>(Map.Floors.Count + EntitiesDictionary.Count);
-            GameObjects.AddRange(this.Map.Floors.Values.Cast<GameObject>().ToList());
-            GameObjects.AddRange(this.EntitiesDictionary.Values.ToList());
+            GameObjects.AddRange(this.Map.Floors.Values.AsEnumerable<GameObject>());
+            GameObjects.AddRange(this.EntitiesDictionary.Values.AsEnumerable<GameObject>());
             return GameObjects;
         }
 
@@ -112,7 +112,7 @@ namespace Business
 
         private void GenerateNewFood()
         {
-            (int, int) NewFoodPostion = Randomizer.Instance.NextFoodPosition;
+            (int, int) NewFoodPostion = Randomizer.Instance.GetValidRandomPosition(this);
             Food NewFood = new Food(NewFoodPostion.Item1, NewFoodPostion.Item2);
             NewFood.OnFoodEatenEvent += this.OnFoodEaten;
             this.Foods.Add(NewFood);
@@ -126,7 +126,6 @@ namespace Business
 
         private void GenerateNewSnake(ISnakeController Controller)
         {
-            //Snake NewSnake = new Snake(PlayerController.Instance);
             Snake NewSnake = new Snake(Controller);
             this.Snakes.Add(NewSnake);
 
