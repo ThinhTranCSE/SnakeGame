@@ -76,7 +76,7 @@ namespace DependencyInjection.Abstracts.Descriptors
                 return ResolveWithTypes(Container, Args.Select(Arg => (Type)Arg).ToArray());
             }
 
-            Type[] ArgsTypes = Args.Select(Arg => Arg.GetType()).ToArray();
+            var ArgsTypes = Args.Select(Arg => Arg.GetType()).ToArray();
             if(!ConstructorDictionary.ContainsKey(ArgsTypes))
             {
                 throw new Exception("No constructor found for given arguments");

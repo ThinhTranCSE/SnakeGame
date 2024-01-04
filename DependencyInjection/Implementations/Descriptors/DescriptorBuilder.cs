@@ -3,6 +3,7 @@ using DependencyInjection.Interfaces.Descriptors;
 using DependencyInjection.Interfaces.ServiceCollections;
 using DependencyInjection.Patterns.Builder.Interfaces.Descriptor;
 using DependencyInjection.Patterns.Composite.Interfaces.Descriptor;
+using DependencyInjection.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +87,7 @@ namespace DependencyInjection.Implementations.Descriptors
             {
                 throw new Exception("Must specify lifetime before registering");
             }
-            IDictionary<IEnumerable<Type>, ConstructorInfo> ConstructorDictionary = new Dictionary<IEnumerable<Type>, ConstructorInfo>();
+            IDictionary<IEnumerable<Type>, ConstructorInfo> ConstructorDictionary = new Dictionary<IEnumerable<Type>, ConstructorInfo>(new TypeIEnumerableComparer());
 
             var Constructors = ImplementationType.GetConstructors().ToArray();
             foreach(var Constructor in Constructors)
@@ -98,7 +99,7 @@ namespace DependencyInjection.Implementations.Descriptors
                 }
                 else
                 {
-                    ConstructorDictionary.Add(Parameters.Select(p => p.ParameterType), Constructor);
+                    ConstructorDictionary.Add(Parameters.Select(p => p.ParameterType).ToArray(), Constructor);
                 }
             }
 
