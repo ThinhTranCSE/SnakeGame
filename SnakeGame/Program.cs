@@ -14,4 +14,14 @@ namespace SnakeGame
             Application.Run(new Form1());
         }
     }
+
+    internal interface ITest
+    {
+
+    }
+
+    internal class Test : ITest
+    {
+
+    }
 }
