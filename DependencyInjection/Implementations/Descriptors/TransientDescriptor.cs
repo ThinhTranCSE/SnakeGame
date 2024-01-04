@@ -19,9 +19,7 @@ namespace DependencyInjection.Implementations.Descriptors
         {
 
         }
-
-
-        public override object Resolve(IDIContainer Container, params Type[] Args)
+        public override object Resolve(IDIContainer Container, params object[] Args)
         {
             return base.Resolve(Container, Args);
         }
