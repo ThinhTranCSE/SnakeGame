@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Business
 {
-    public class GameManager
+    public class GameManager : IGameManager
     {
         public static GameManager Instance => GetInstance();
 
@@ -108,8 +108,6 @@ namespace Business
                 }
             }
         }
-
-
         private void GenerateNewFood()
         {
             (int, int) NewFoodPostion = Randomizer.Instance.GetValidRandomPosition(this);

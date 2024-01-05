@@ -1,5 +1,6 @@
 ﻿using Business.Configurations;
 using Business.DataStructures.Abstracts;
+using Business.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,7 +11,7 @@ using static Business.Enums.Enums;
 
 namespace Business
 {
-    public class GraphicManager
+    public class GraphicManager : IGraphicManager
     {
         public static GraphicManager Instance => GetInstance();
 
