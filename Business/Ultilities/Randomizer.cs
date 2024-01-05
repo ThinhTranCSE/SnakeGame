@@ -15,7 +15,7 @@ namespace Business.Ultilities
 
         private static Randomizer _Instance;
 
-        public (int, int ) NextFoodPosition => GetValidRandomPosition();
+        //public (int, int ) NextFoodPosition => GetValidRandomPosition();
 
         private Random Random;
         protected Randomizer() { 
@@ -36,9 +36,13 @@ namespace Business.Ultilities
             return this.Random.Next(Min, Max + 1);
         }
 
-        public (int, int) GetValidRandomPosition()
+        public (int, int) GetValidRandomPosition(GameManager GameManager = null)
         {
-            List<Floor> Floors = GameManager.Instance.Map.ActiveFloors.Values.ToList();
+            if(GameManager == null)
+            {
+                GameManager = Business.GameManager.Instance;
+            }
+            List<Floor> Floors = GameManager.Map.ActiveFloors.Values.ToList();
             int Index = this.GetRandomNumber(0, Floors.Count - 1);
             Floor ValidFloor = Floors[Index];
 

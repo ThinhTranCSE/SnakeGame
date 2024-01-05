@@ -1,4 +1,4 @@
-namespace SnakeGame
+namespace GameClient
 {
     internal static class Program
     {
@@ -13,15 +13,5 @@ namespace SnakeGame
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
         }
-    }
-
-    internal interface ITest
-    {
-
-    }
-
-    internal class Test : ITest
-    {
-
     }
 }
