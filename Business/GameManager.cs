@@ -13,9 +13,8 @@ using System.Threading.Tasks;
 
 namespace Business
 {
-    public class GameManager
+    public class GameManager : IGameManager
     {
-        private int UpdateCount = 0;
         public static GameManager Instance => GetInstance();
 
         private static GameManager _Instance;
@@ -46,7 +45,6 @@ namespace Business
         }
         public void Update()
         {
-            this.UpdateCount++;
             if(this.Snakes.Count == 0)
             {
                 return;
@@ -110,8 +108,6 @@ namespace Business
                 }
             }
         }
-
-
         private void GenerateNewFood()
         {
             (int, int) NewFoodPostion = Randomizer.Instance.NextFoodPosition;
